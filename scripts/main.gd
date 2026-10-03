@@ -1,6 +1,7 @@
 extends Node2D
 
 const OBSTACLE_PAIR = preload("res://scenes/obstacle_pair.tscn")
+const HIGH_SCORE_PATH = "user://high_score.cfg"
 
 @export_range(0.1, 10.0, 0.1) var spawn_interval: float = 2.0
 @export_range(1.0, 600.0, 1.0) var obstacle_speed: float = 180.0
@@ -9,12 +10,15 @@ const OBSTACLE_PAIR = preload("res://scenes/obstacle_pair.tscn")
 var is_game_over: bool = false
 var death_reason: String = ""
 var score: int = 0
+var best_score: int = 0
 
 
 func _ready() -> void:
+	_load_high_score()
 	$Player.died.connect(_on_player_died)
 	$SpawnTimer.start(spawn_interval)
 	$UI/ScoreLabel.text = "Score: 0"
+	$UI/BestScoreLabel.text = "Best: %d" % best_score
 	$UI/GameOverPanel.hide()
 
 
@@ -28,6 +32,26 @@ func _process(_delta: float) -> void:
 			pair.has_scored = true
 			score += 1
 			$UI/ScoreLabel.text = "Score: %d" % score
+			if score > best_score:
+				best_score = score
+				$UI/BestScoreLabel.text = "Best: %d" % best_score
+				_save_high_score()
+
+
+func _load_high_score() -> void:
+	var save_data := ConfigFile.new()
+	if save_data.load(HIGH_SCORE_PATH) != OK:
+		return
+	var saved_score: Variant = save_data.get_value("scores", "best", 0)
+	if saved_score is int and saved_score >= 0:
+		best_score = saved_score
+
+
+func _save_high_score() -> void:
+	var save_data := ConfigFile.new()
+	save_data.set_value("scores", "best", best_score)
+	if save_data.save(HIGH_SCORE_PATH) != OK:
+		push_warning("Could not save the high score.")
 
 
 func _spawn_obstacle_pair() -> void:
