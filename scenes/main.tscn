@@ -57,9 +57,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -140.0
-offset_top = -80.0
+offset_top = -115.0
 offset_right = 140.0
-offset_bottom = 80.0
+offset_bottom = 115.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -73,6 +73,15 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Game Over"
 horizontal_alignment = 1
+
+[node name="DeathQuoteLabel" type="Label" parent="UI/GameOverPanel/Content"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="RestartButton" type="Button" parent="UI/GameOverPanel/Content"]
 custom_minimum_size = Vector2(0, 48)

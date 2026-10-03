@@ -2,6 +2,23 @@ extends Node2D
 
 const OBSTACLE_PAIR = preload("res://scenes/obstacle_pair.tscn")
 const HIGH_SCORE_PATH = "user://high_score.cfg"
+const DEATH_QUOTES: Array[String] = [
+	"Gravity wins again.",
+	"That wall moved. Probably.",
+	"One more try, one more meow.",
+	"Paws need a pilot license.",
+	"I meant to land there.",
+	"Nine lives. Zero brakes.",
+	"The floor wanted a hug.",
+	"Ceiling: 1. Cat: 0.",
+	"Too much flap, not enough map.",
+	"Whiskers missed the memo.",
+	"Nap time came early.",
+	"My paws slipped.",
+	"That gap looked bigger.",
+	"Flying is a work in pawgress.",
+	"Meow. Let's try again.",
+]
 const BACKGROUND_COLORS: Array[Color] = [
 	Color("20334d"),
 	Color("3d294d"),
@@ -30,6 +47,7 @@ func _ready() -> void:
 	$UI/ScoreLabel.text = "Score: 0"
 	$UI/BestScoreLabel.text = "Best: %d" % best_score
 	$UI/GameOverPanel.hide()
+	$UI/GameOverPanel/Content/DeathQuoteLabel.text = ""
 
 
 func _choose_background() -> void:
@@ -100,6 +118,7 @@ func _on_player_died(reason: String) -> void:
 	$SpawnTimer.stop()
 	for pair in $Obstacles.get_children():
 		pair.set_physics_process(false)
+	$UI/GameOverPanel/Content/DeathQuoteLabel.text = DEATH_QUOTES.pick_random()
 	$UI/GameOverPanel.show()
 	$UI/GameOverPanel/Content/RestartButton.grab_focus()
 
