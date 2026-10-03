@@ -2,6 +2,15 @@ extends Node2D
 
 const OBSTACLE_PAIR = preload("res://scenes/obstacle_pair.tscn")
 const HIGH_SCORE_PATH = "user://high_score.cfg"
+const BACKGROUND_COLORS: Array[Color] = [
+	Color("20334d"),
+	Color("3d294d"),
+	Color("193b3b"),
+	Color("4a3028"),
+]
+
+# A script static variable survives scene reloads without an extra singleton.
+static var previous_background: int = -1
 
 @export_range(0.1, 10.0, 0.1) var spawn_interval: float = 2.0
 @export_range(1.0, 600.0, 1.0) var obstacle_speed: float = 180.0
@@ -14,12 +23,24 @@ var best_score: int = 0
 
 
 func _ready() -> void:
+	_choose_background()
 	_load_high_score()
 	$Player.died.connect(_on_player_died)
 	$SpawnTimer.start(spawn_interval)
 	$UI/ScoreLabel.text = "Score: 0"
 	$UI/BestScoreLabel.text = "Best: %d" % best_score
 	$UI/GameOverPanel.hide()
+
+
+func _choose_background() -> void:
+	var background_index := randi_range(0, BACKGROUND_COLORS.size() - 1)
+	if BACKGROUND_COLORS.size() > 1 and previous_background >= 0:
+		# Pick from all entries except the previous run's color.
+		background_index = randi_range(0, BACKGROUND_COLORS.size() - 2)
+		if background_index >= previous_background:
+			background_index += 1
+	$Background/Color.color = BACKGROUND_COLORS[background_index]
+	previous_background = background_index
 
 
 func _process(_delta: float) -> void:
