@@ -15,3 +15,6 @@ shape = SubResource("Rectangle_player")
 [node name="Placeholder" type="Polygon2D" parent="." unique_id=1276906726]
 color = Color(1, 0.7, 0.3, 1)
 polygon = PackedVector2Array(-18, -18, 18, -18, 18, 18, -18, 18)
+
+[node name="FlapSound" type="AudioStreamPlayer" parent="."]
+volume_db = -12.0

@@ -2,8 +2,8 @@ extends Area2D
 
 signal died(reason: String)
 
-@export var fall_gravity: float = 1000.0
-@export var flap_strength: float = 350.0
+@export var fall_gravity: float = 900.0
+@export var flap_strength: float = 330.0
 
 var vertical_velocity: float = 0.0
 var is_dead: bool = false
@@ -19,6 +19,9 @@ func _physics_process(delta: float) -> void:
 	vertical_velocity += fall_gravity * delta
 	if Input.is_action_just_pressed("flap"):
 		vertical_velocity = -flap_strength
+		# Assign a short audio asset to FlapSound when one is available.
+		if $FlapSound.stream != null:
+			$FlapSound.play()
 	position.y += vertical_velocity * delta
 	var half_height: float = $CollisionShape2D.shape.size.y / 2.0
 	if position.y - half_height <= 0.0:
@@ -38,6 +41,7 @@ func _die(reason: String) -> void:
 		return
 	is_dead = true
 	vertical_velocity = 0.0
+	$FlapSound.stop()
 	set_physics_process(false)
 	set_deferred("monitoring", false)
 	died.emit(reason)

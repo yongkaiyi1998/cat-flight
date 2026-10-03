@@ -30,8 +30,8 @@ const BACKGROUND_COLORS: Array[Color] = [
 static var previous_background: int = -1
 
 @export_range(0.1, 10.0, 0.1) var spawn_interval: float = 2.0
-@export_range(1.0, 600.0, 1.0) var obstacle_speed: float = 180.0
-@export_range(40.0, 600.0, 1.0) var gap_size: float = 220.0
+@export_range(1.0, 600.0, 1.0) var obstacle_speed: float = 170.0
+@export_range(40.0, 600.0, 1.0) var gap_size: float = 240.0
 
 var is_game_over: bool = false
 var death_reason: String = ""
@@ -70,6 +70,8 @@ func _process(_delta: float) -> void:
 		if not pair.has_scored and pair.position.x + pair.obstacle_width < player_left:
 			pair.has_scored = true
 			score += 1
+			if $ScoreSound.stream != null:
+				$ScoreSound.play()
 			$UI/ScoreLabel.text = "Score: %d" % score
 			if score > best_score:
 				best_score = score
@@ -115,6 +117,9 @@ func _on_player_died(reason: String) -> void:
 		return
 	is_game_over = true
 	death_reason = reason
+	$ScoreSound.stop()
+	if $DeathSound.stream != null:
+		$DeathSound.play()
 	$SpawnTimer.stop()
 	for pair in $Obstacles.get_children():
 		pair.set_physics_process(false)
