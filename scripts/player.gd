@@ -7,10 +7,12 @@ signal died(reason: String)
 
 var vertical_velocity: float = 0.0
 var is_dead: bool = false
+var death_reaction: Tween
 
 
 func _ready() -> void:
 	area_entered.connect(_on_obstacle_entered)
+	get_viewport().size_changed.connect(_on_viewport_size_changed)
 
 
 func _physics_process(delta: float) -> void:
@@ -50,7 +52,8 @@ func _die(reason: String) -> void:
 
 func _play_death_reaction(reason: String) -> void:
 	# Animate only the placeholder art; normal flight stays disabled.
-	var reaction := create_tween()
+	death_reaction = create_tween()
+	var reaction := death_reaction
 	match reason:
 		"obstacle":
 			reaction.tween_property($Placeholder, "scale", Vector2(0.7, 1.2), 0.1)
@@ -68,6 +71,16 @@ func _play_death_reaction(reason: String) -> void:
 			reaction.parallel().tween_property(
 				$Placeholder, "position:y", half_height * (1.0 - 0.35), 0.15
 			)
+	reaction.tween_callback(_settle_on_ground)
+
+
+func _settle_on_ground() -> void:
+	position.y = get_viewport_rect().size.y - $CollisionShape2D.shape.size.y / 2.0
+
+
+func _on_viewport_size_changed() -> void:
+	if is_dead and death_reaction != null and not death_reaction.is_running():
+		_settle_on_ground()
 
 
 func _fall_after_hit(reaction: Tween) -> void:
