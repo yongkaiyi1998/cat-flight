@@ -5,6 +5,8 @@ extends Node2D
 @export var gap_size: float = 220.0
 @export var gap_center: float = 360.0
 
+var has_scored: bool = false
+
 
 func _ready() -> void:
 	var screen_height := get_viewport_rect().size.y

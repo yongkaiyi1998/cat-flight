@@ -8,11 +8,26 @@ const OBSTACLE_PAIR = preload("res://scenes/obstacle_pair.tscn")
 
 var is_game_over: bool = false
 var death_reason: String = ""
+var score: int = 0
 
 
 func _ready() -> void:
 	$Player.died.connect(_on_player_died)
 	$SpawnTimer.start(spawn_interval)
+	$UI/ScoreLabel.text = "Score: 0"
+	$UI/GameOverPanel.hide()
+
+
+func _process(_delta: float) -> void:
+	if is_game_over:
+		return
+	var player_left: float = $Player.position.x - $Player/CollisionShape2D.shape.size.x / 2.0
+	for pair in $Obstacles.get_children():
+		# Award a point only after the whole pair clears the player.
+		if not pair.has_scored and pair.position.x + pair.obstacle_width < player_left:
+			pair.has_scored = true
+			score += 1
+			$UI/ScoreLabel.text = "Score: %d" % score
 
 
 func _spawn_obstacle_pair() -> void:
@@ -40,3 +55,10 @@ func _on_player_died(reason: String) -> void:
 	$SpawnTimer.stop()
 	for pair in $Obstacles.get_children():
 		pair.set_physics_process(false)
+	$UI/GameOverPanel.show()
+	$UI/GameOverPanel/Content/RestartButton.grab_focus()
+
+
+func _restart_run() -> void:
+	# Reloading recreates the player, obstacles, timer, score, and game-over state.
+	get_tree().reload_current_scene()

@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://px05rt3yxwxi"]
 
-[ext_resource type="Script" path="res://scripts/obstacle_pair.gd" id="1_obstacle"]
+[ext_resource type="Script" uid="uid://bsrqb246t3dip" path="res://scripts/obstacle_pair.gd" id="1_obstacle"]
 
 [sub_resource type="RectangleShape2D" id="Rectangle_top"]
 resource_local_to_scene = true
@@ -10,32 +10,30 @@ size = Vector2(70, 250)
 resource_local_to_scene = true
 size = Vector2(70, 250)
 
-[node name="ObstaclePair" type="Node2D"]
+[node name="ObstaclePair" type="Node2D" unique_id=1661970176]
 script = ExtResource("1_obstacle")
 
-[node name="TopObstacle" type="ColorRect" parent="."]
+[node name="TopObstacle" type="ColorRect" parent="." unique_id=1402843457]
 offset_right = 70.0
 offset_bottom = 250.0
 mouse_filter = 2
 color = Color(0.3, 0.8, 0.45, 1)
 
-[node name="TopCollision" type="Area2D" parent="."]
-collision_layer = 1
+[node name="TopCollision" type="Area2D" parent="." unique_id=2053523131]
 collision_mask = 0
 monitoring = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TopCollision"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TopCollision" unique_id=1105483269]
 shape = SubResource("Rectangle_top")
 
-[node name="BottomCollision" type="Area2D" parent="."]
-collision_layer = 1
+[node name="BottomCollision" type="Area2D" parent="." unique_id=2019256777]
 collision_mask = 0
 monitoring = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BottomCollision"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BottomCollision" unique_id=41329417]
 shape = SubResource("Rectangle_bottom")
 
-[node name="BottomObstacle" type="ColorRect" parent="."]
+[node name="BottomObstacle" type="ColorRect" parent="." unique_id=650226832]
 offset_top = 470.0
 offset_right = 70.0
 offset_bottom = 720.0
