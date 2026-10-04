@@ -1,6 +1,35 @@
-[gd_scene format=3 uid="uid://bp7s68hc2fify"]
+[gd_scene load_steps=10 format=3 uid="uid://bp7s68hc2fify"]
 
 [ext_resource type="Script" uid="uid://cgvuir81php7y" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="Texture2D" path="res://assets/cat/yuki/cat_yuki_fly_01.png" id="2_fly_01"]
+[ext_resource type="Texture2D" path="res://assets/cat/yuki/cat_yuki_fly_02.png" id="3_fly_02"]
+[ext_resource type="Texture2D" path="res://assets/cat/yuki/cat_yuki_fly_03.png" id="4_fly_03"]
+[ext_resource type="Texture2D" path="res://assets/cat/yuki/cat_yuki_hit.png" id="5_hit"]
+[ext_resource type="Texture2D" path="res://assets/cat/yuki/cat_yuki_bonk.png" id="6_bonk"]
+[ext_resource type="Texture2D" path="res://assets/cat/yuki/cat_yuki_squash.png" id="7_squash"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yuki"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": ExtResource("2_fly_01")}, {"duration": 1.0, "texture": ExtResource("3_fly_02")}, {"duration": 1.0, "texture": ExtResource("4_fly_03")}],
+"loop": false,
+"name": &"fly",
+"speed": 0.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("5_hit")}],
+"loop": false,
+"name": &"hit",
+"speed": 7.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("6_bonk")}],
+"loop": false,
+"name": &"bonk",
+"speed": 7.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("7_squash")}],
+"loop": false,
+"name": &"squash",
+"speed": 7.0
+}]
 
 [sub_resource type="RectangleShape2D" id="Rectangle_player"]
 size = Vector2(36, 36)
@@ -12,9 +41,10 @@ script = ExtResource("1_player")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1937696782]
 shape = SubResource("Rectangle_player")
 
-[node name="Placeholder" type="Polygon2D" parent="." unique_id=1276906726]
-color = Color(1, 0.7, 0.3, 1)
-polygon = PackedVector2Array(-18, -18, 18, -18, 18, 18, -18, 18)
+[node name="Visual" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_yuki")
+animation = &"fly"
 
 [node name="FlapSound" type="AudioStreamPlayer" parent="."]
 volume_db = -12.0
