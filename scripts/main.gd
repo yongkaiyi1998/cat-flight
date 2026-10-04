@@ -124,8 +124,9 @@ func _on_player_died(reason: String) -> void:
 	for pair in $Obstacles.get_children():
 		pair.set_physics_process(false)
 	$UI/GameOverPanel/Content/DeathQuoteLabel.text = DEATH_QUOTES.pick_random()
+	$UI/GameOverPanel/Content/RunScoreLabel.text = "Score: %d" % score
+	$UI/GameOverPanel/Content/RunBestLabel.text = "Best: %d" % best_score
 	$UI/GameOverPanel.show()
-	$UI/GameOverPanel/Content/RestartButton.grab_focus()
 
 
 func _restart_run() -> void:
