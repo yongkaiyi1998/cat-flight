@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bp7s68hc2fify" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://bntc3i7f0hsp" path="res://scripts/main.gd" id="2_main"]
+[ext_resource type="PackedScene" path="res://scenes/ground.tscn" id="3_ground"]
 
 [node name="Main" type="Node2D" unique_id=1732260445]
 script = ExtResource("2_main")
@@ -19,6 +20,8 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0.125, 0.2, 0.302, 1)
+
+[node name="Ground" parent="." instance=ExtResource("3_ground")]
 
 [node name="Obstacles" type="Node2D" parent="." unique_id=858012460]
 

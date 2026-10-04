@@ -2,6 +2,8 @@ extends Area2D
 
 signal died(reason: String)
 
+const GROUND_TOP_EDGE_HEIGHT: float = 16.0
+
 @export var fall_gravity: float = 900.0
 @export var flap_strength: float = 330.0
 
@@ -36,8 +38,8 @@ func _physics_process(delta: float) -> void:
 	if position.y - half_height <= 0.0:
 		position.y = half_height
 		_die("ceiling")
-	elif position.y + half_height >= get_viewport_rect().size.y:
-		position.y = get_viewport_rect().size.y - half_height
+	elif position.y + half_height >= _ground_surface_y():
+		position.y = _ground_surface_y() - half_height
 		_die("ground")
 
 
@@ -95,7 +97,11 @@ func _play_death_reaction(reason: String) -> void:
 
 
 func _settle_on_ground() -> void:
-	position.y = get_viewport_rect().size.y - $CollisionShape2D.shape.size.y / 2.0
+	position.y = _ground_surface_y() - $CollisionShape2D.shape.size.y / 2.0
+
+
+func _ground_surface_y() -> float:
+	return get_viewport_rect().size.y - GROUND_TOP_EDGE_HEIGHT
 
 
 func _on_viewport_size_changed() -> void:
@@ -107,7 +113,7 @@ func _fall_after_hit(reaction: Tween) -> void:
 	reaction.tween_property($Visual, "scale", Vector2.ONE, 0.1)
 	reaction.parallel().tween_property($Visual, "position", Vector2.ZERO, 0.1)
 	var half_height: float = $CollisionShape2D.shape.size.y / 2.0
-	var ground_y := get_viewport_rect().size.y - half_height
+	var ground_y := _ground_surface_y() - half_height
 	reaction.tween_property(self, "position:y", ground_y, 0.65).set_trans(
 		Tween.TRANS_QUAD
 	).set_ease(Tween.EASE_IN)

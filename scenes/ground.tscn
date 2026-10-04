@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environment/v1/ground_top_edge.png" id="1_edge"]
+[ext_resource type="Texture2D" path="res://assets/environment/v1/ground_body.png" id="2_body"]
+
+[node name="Ground" type="CanvasLayer"]
+layer = -1
+
+[node name="TopEdge" type="TextureRect" parent="."]
+texture_filter = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -16.0
+mouse_filter = 2
+texture = ExtResource("1_edge")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Body" type="TextureRect" parent="."]
+texture_filter = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("2_body")
+expand_mode = 1
+stretch_mode = 1
