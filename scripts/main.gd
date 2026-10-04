@@ -19,11 +19,11 @@ const DEATH_QUOTES: Array[String] = [
 	"Flying is a work in pawgress.",
 	"Meow. Let's try again.",
 ]
-const BACKGROUND_COLORS: Array[Color] = [
-	Color("20334d"),
-	Color("3d294d"),
-	Color("193b3b"),
-	Color("4a3028"),
+const BACKGROUND_TEXTURES: Array[Texture2D] = [
+	preload("res://assets/backgrounds/v1/background_sunny_room.png"),
+	preload("res://assets/backgrounds/v1/background_living_room.png"),
+	preload("res://assets/backgrounds/v1/background_bedroom.png"),
+	preload("res://assets/backgrounds/v1/background_cat_corner.png"),
 ]
 
 # A script static variable survives scene reloads without an extra singleton.
@@ -51,13 +51,13 @@ func _ready() -> void:
 
 
 func _choose_background() -> void:
-	var background_index := randi_range(0, BACKGROUND_COLORS.size() - 1)
-	if BACKGROUND_COLORS.size() > 1 and previous_background >= 0:
-		# Pick from all entries except the previous run's color.
-		background_index = randi_range(0, BACKGROUND_COLORS.size() - 2)
+	var background_index := randi_range(0, BACKGROUND_TEXTURES.size() - 1)
+	if BACKGROUND_TEXTURES.size() > 1 and previous_background >= 0:
+		# Pick from all entries except the previous run's background.
+		background_index = randi_range(0, BACKGROUND_TEXTURES.size() - 2)
 		if background_index >= previous_background:
 			background_index += 1
-	$Background/Color.color = BACKGROUND_COLORS[background_index]
+	$Background/Image.texture = BACKGROUND_TEXTURES[background_index]
 	previous_background = background_index
 
 

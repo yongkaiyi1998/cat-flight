@@ -10,16 +10,18 @@ obstacle_speed = 200.0
 gap_size = 185.0
 
 [node name="Background" type="CanvasLayer" parent="." unique_id=1435686851]
-layer = -1
+layer = -2
 
-[node name="Color" type="ColorRect" parent="Background" unique_id=1114002836]
+[node name="Image" type="TextureRect" parent="Background" unique_id=1114002836]
+texture_filter = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.125, 0.2, 0.302, 1)
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Ground" parent="." instance=ExtResource("3_ground")]
 
