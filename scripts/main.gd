@@ -32,6 +32,9 @@ static var previous_background: int = -1
 @export_range(0.1, 10.0, 0.1) var spawn_interval: float = 2.0
 @export_range(1.0, 600.0, 1.0) var obstacle_speed: float = 170.0
 @export_range(40.0, 600.0, 1.0) var gap_size: float = 240.0
+@export_range(0.0, 3.0, 0.1) var game_over_ui_delay_hit: float = 0.9
+@export_range(0.0, 3.0, 0.1) var game_over_ui_delay_bonk: float = 0.9
+@export_range(0.0, 3.0, 0.1) var game_over_ui_delay_squash: float = 0.4
 
 var is_game_over: bool = false
 var death_reason: String = ""
@@ -123,6 +126,14 @@ func _on_player_died(reason: String) -> void:
 	$SpawnTimer.stop()
 	for pair in $Obstacles.get_children():
 		pair.set_physics_process(false)
+	# Gameplay is already stopped; let the death Tween play before covering it.
+	var ui_delay := game_over_ui_delay_hit
+	match reason:
+		"ceiling":
+			ui_delay = game_over_ui_delay_bonk
+		"ground":
+			ui_delay = game_over_ui_delay_squash
+	await get_tree().create_timer(ui_delay).timeout
 	$UI/GameOverPanel/Content/DeathQuoteLabel.text = DEATH_QUOTES.pick_random()
 	$UI/GameOverPanel/Content/RunScoreLabel.text = "Score: %d" % score
 	$UI/GameOverPanel/Content/RunBestLabel.text = "Best: %d" % best_score
