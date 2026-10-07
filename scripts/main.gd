@@ -2,6 +2,9 @@ extends Node2D
 
 const OBSTACLE_PAIR = preload("res://scenes/obstacle_pair.tscn")
 const HIGH_SCORE_PATH = "user://high_score.cfg"
+const SCORE_SOUND: AudioStream = preload("res://assets/audio/sfx/sfx_score.wav")
+const MEOW_SOUND: AudioStream = preload("res://assets/audio/sfx/sfx_meow.wav")
+const DEATH_SOUND: AudioStream = preload("res://assets/audio/sfx/sfx_death.wav")
 const DEATH_QUOTES: Array[String] = [
 	"Gravity wins again.",
 	"That wall moved. Probably.",
@@ -43,6 +46,8 @@ var best_score: int = 0
 
 
 func _ready() -> void:
+	$ScoreSound.stream = SCORE_SOUND
+	$DeathSound.stream = DEATH_SOUND
 	_choose_background()
 	_load_high_score()
 	$Player.died.connect(_on_player_died)
@@ -73,6 +78,8 @@ func _process(_delta: float) -> void:
 		if not pair.has_scored and pair.position.x + pair.obstacle_width < player_left:
 			pair.has_scored = true
 			score += 1
+			# One player handles both sounds, so a milestone replaces the normal chime.
+			$ScoreSound.stream = MEOW_SOUND if score % 10 == 0 else SCORE_SOUND
 			if $ScoreSound.stream != null:
 				$ScoreSound.play()
 			$UI/ScoreLabel.text = "Score: %d" % score

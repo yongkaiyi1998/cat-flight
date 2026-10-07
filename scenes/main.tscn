@@ -3,36 +3,41 @@
 [ext_resource type="PackedScene" uid="uid://bp7s68hc2fify" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://bntc3i7f0hsp" path="res://scripts/main.gd" id="2_main"]
 [ext_resource type="PackedScene" path="res://scenes/ground.tscn" id="3_ground"]
-[ext_resource type="Texture2D" path="res://assets/ui/v1/ui_game_over_panel.png" id="4_game_over"]
-[ext_resource type="Texture2D" path="res://assets/ui/v1/ui_score_panel.png" id="5_score"]
-[ext_resource type="Texture2D" path="res://assets/ui/v1/ui_restart_button_normal.png" id="6_restart_normal"]
-[ext_resource type="Texture2D" path="res://assets/ui/v1/ui_restart_button_pressed.png" id="7_restart_pressed"]
-
-[ext_resource type="FontFile" path="res://assets/fonts/Fredoka-VariableFont_wdth,wght.ttf" id="8_fredoka"]
-
-[sub_resource type="FontVariation" id="Fredoka_semibold"]
-base_font = ExtResource("8_fredoka")
-variation_opentype = {2003265652: 600.0}
+[ext_resource type="Texture2D" uid="uid://w3wd2juydhjv" path="res://assets/ui/v1/ui_game_over_panel.png" id="4_game_over"]
+[ext_resource type="Texture2D" uid="uid://bprmicuo2xt42" path="res://assets/ui/v1/ui_score_panel.png" id="5_score"]
+[ext_resource type="Texture2D" uid="uid://72um02qml0ip" path="res://assets/ui/v1/ui_restart_button_normal.png" id="6_restart_normal"]
+[ext_resource type="Texture2D" uid="uid://iy5r2xs5a5e" path="res://assets/ui/v1/ui_restart_button_pressed.png" id="7_restart_pressed"]
+[ext_resource type="FontFile" uid="uid://b3a6jfjeylfr0" path="res://assets/fonts/Fredoka-VariableFont_wdth,wght.ttf" id="8_fredoka"]
 
 [sub_resource type="FontVariation" id="Fredoka_bold"]
 base_font = ExtResource("8_fredoka")
-variation_opentype = {2003265652: 700.0}
+variation_opentype = {
+2003265652: 700.0
+}
+
+[sub_resource type="FontVariation" id="Fredoka_semibold"]
+base_font = ExtResource("8_fredoka")
+variation_opentype = {
+2003265652: 600.0
+}
 
 [sub_resource type="FontVariation" id="Fredoka_medium"]
 base_font = ExtResource("8_fredoka")
-variation_opentype = {2003265652: 500.0}
+variation_opentype = {
+2003265652: 500.0
+}
 
 [sub_resource type="StyleBoxTexture" id="Restart_normal"]
 content_margin_left = 80.0
-content_margin_right = 24.0
 content_margin_top = 0.0
+content_margin_right = 24.0
 content_margin_bottom = 0.0
 texture = ExtResource("6_restart_normal")
 
 [sub_resource type="StyleBoxTexture" id="Restart_pressed"]
 content_margin_left = 80.0
-content_margin_right = 24.0
 content_margin_top = 0.0
+content_margin_right = 24.0
 content_margin_bottom = 0.0
 texture = ExtResource("7_restart_pressed")
 
@@ -55,7 +60,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Ground" parent="." instance=ExtResource("3_ground")]
+[node name="Ground" parent="." unique_id=53914351 instance=ExtResource("3_ground")]
 
 [node name="Obstacles" type="Node2D" parent="." unique_id=858012460]
 
@@ -72,8 +77,9 @@ volume_db = -10.0
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=866740355]
 
-[node name="ScorePanel" type="TextureRect" parent="UI"]
+[node name="ScorePanel" type="TextureRect" parent="UI" unique_id=1634661169]
 texture_filter = 1
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -120.0
@@ -86,13 +92,13 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="ScoreLabel" type="Label" parent="UI" unique_id=333632395]
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -100.0
 offset_top = 43.0
 offset_right = 100.0
 offset_bottom = 77.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.25, 0.12, 0.07, 1)
 theme_override_fonts/font = SubResource("Fredoka_bold")
 theme_override_font_sizes/font_size = 22
@@ -107,7 +113,6 @@ anchor_right = 1.0
 offset_top = 110.0
 offset_bottom = 140.0
 grow_horizontal = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.25, 0.12, 0.07, 1)
 theme_override_colors/font_outline_color = Color(1, 0.93, 0.8, 1)
 theme_override_constants/outline_size = 2
@@ -118,6 +123,7 @@ horizontal_alignment = 1
 
 [node name="GameOverPanel" type="Control" parent="UI" unique_id=1919667733]
 visible = false
+layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -131,8 +137,9 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="PanelArt" type="TextureRect" parent="UI/GameOverPanel"]
+[node name="PanelArt" type="TextureRect" parent="UI/GameOverPanel" unique_id=1722269841]
 texture_filter = 1
+layout_mode = 0
 offset_right = 400.0
 offset_bottom = 294.0
 mouse_filter = 2
@@ -141,17 +148,17 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Content" type="Control" parent="UI/GameOverPanel" unique_id=549751091]
-anchors_preset = 15
+anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="Title" type="Label" parent="UI/GameOverPanel/Content" unique_id=1538052634]
+layout_mode = 0
 offset_left = 48.0
 offset_top = 60.0
 offset_right = 352.0
 offset_bottom = 102.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.25, 0.12, 0.07, 1)
 theme_override_fonts/font = SubResource("Fredoka_bold")
 theme_override_font_sizes/font_size = 30
@@ -159,24 +166,24 @@ text = "Game Over"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RunScoreLabel" type="Label" parent="UI/GameOverPanel/Content"]
+[node name="RunScoreLabel" type="Label" parent="UI/GameOverPanel/Content" unique_id=948644311]
+layout_mode = 0
 offset_left = 52.0
 offset_top = 106.0
 offset_right = 348.0
 offset_bottom = 136.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.25, 0.12, 0.07, 1)
 theme_override_fonts/font = SubResource("Fredoka_semibold")
 theme_override_font_sizes/font_size = 24
 text = "Score: 0"
 horizontal_alignment = 1
 
-[node name="RunBestLabel" type="Label" parent="UI/GameOverPanel/Content"]
+[node name="RunBestLabel" type="Label" parent="UI/GameOverPanel/Content" unique_id=1710446465]
+layout_mode = 0
 offset_left = 52.0
 offset_top = 138.0
 offset_right = 348.0
 offset_bottom = 168.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.25, 0.12, 0.07, 1)
 theme_override_fonts/font = SubResource("Fredoka_semibold")
 theme_override_font_sizes/font_size = 24
@@ -184,11 +191,11 @@ text = "Best: 0"
 horizontal_alignment = 1
 
 [node name="DeathQuoteLabel" type="Label" parent="UI/GameOverPanel/Content" unique_id=308645011]
+layout_mode = 0
 offset_left = 52.0
 offset_top = 174.0
 offset_right = 348.0
 offset_bottom = 222.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.25, 0.12, 0.07, 1)
 theme_override_fonts/font = SubResource("Fredoka_medium")
 theme_override_font_sizes/font_size = 18
@@ -198,21 +205,22 @@ autowrap_mode = 3
 
 [node name="RestartButton" type="Button" parent="UI/GameOverPanel/Content" unique_id=971893989]
 texture_filter = 1
-focus_mode = 0
+custom_minimum_size = Vector2(300, 100)
+layout_mode = 0
 offset_left = 50.0
 offset_top = 304.0
 offset_right = 350.0
 offset_bottom = 404.0
-custom_minimum_size = Vector2(300, 100)
+focus_mode = 0
 theme_override_colors/font_color = Color(0.25, 0.12, 0.07, 1)
-theme_override_colors/font_hover_color = Color(0.25, 0.12, 0.07, 1)
-theme_override_colors/font_pressed_color = Color(0.25, 0.12, 0.07, 1)
 theme_override_colors/font_focus_color = Color(0.25, 0.12, 0.07, 1)
+theme_override_colors/font_pressed_color = Color(0.25, 0.12, 0.07, 1)
+theme_override_colors/font_hover_color = Color(0.25, 0.12, 0.07, 1)
 theme_override_fonts/font = SubResource("Fredoka_bold")
 theme_override_font_sizes/font_size = 26
 theme_override_styles/normal = SubResource("Restart_normal")
-theme_override_styles/hover = SubResource("Restart_normal")
 theme_override_styles/pressed = SubResource("Restart_pressed")
+theme_override_styles/hover = SubResource("Restart_normal")
 theme_override_styles/hover_pressed = SubResource("Restart_pressed")
 text = "Restart"
 

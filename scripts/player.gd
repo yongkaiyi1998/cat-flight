@@ -3,6 +3,7 @@ extends Area2D
 signal died(reason: String)
 
 const GROUND_TOP_EDGE_HEIGHT: float = 16.0
+const FLAP_SOUND: AudioStream = preload("res://assets/audio/sfx/sfx_flap.wav")
 
 @export var fall_gravity: float = 900.0
 @export var flap_strength: float = 330.0
@@ -17,6 +18,7 @@ var death_reaction: Tween
 
 
 func _ready() -> void:
+	$FlapSound.stream = FLAP_SOUND
 	area_entered.connect(_on_obstacle_entered)
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
 	$Visual.stop()
@@ -29,7 +31,6 @@ func _physics_process(delta: float) -> void:
 	vertical_velocity += fall_gravity * delta
 	if Input.is_action_just_pressed("flap"):
 		vertical_velocity = -flap_strength
-		# Assign a short audio asset to FlapSound when one is available.
 		if $FlapSound.stream != null:
 			$FlapSound.play()
 	position.y += vertical_velocity * delta
