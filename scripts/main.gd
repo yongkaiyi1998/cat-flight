@@ -46,6 +46,7 @@ var best_score: int = 0
 
 
 func _ready() -> void:
+	MusicManager.start_run()
 	$ScoreSound.stream = SCORE_SOUND
 	$DeathSound.stream = DEATH_SOUND
 	_choose_background()
@@ -127,6 +128,7 @@ func _on_player_died(reason: String) -> void:
 		return
 	is_game_over = true
 	death_reason = reason
+	MusicManager.stop_on_death()
 	$ScoreSound.stop()
 	if $DeathSound.stream != null:
 		$DeathSound.play()
