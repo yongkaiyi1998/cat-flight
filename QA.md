@@ -2,16 +2,39 @@
 
 Date: 2026-10-04. Engine: Godot 4.7.2 on Windows.
 
-## Result
+## Current V1 update — 2026-10-07
+
+Production Yuki, obstacle/ground, room backgrounds and UI art are integrated,
+with Fredoka typography and finalized audio. The tuning table below reflects
+the current build; obstacle width changed from the historical 70 px to 80 px.
+
+- Gameplay shows only Score. Best remains in Game Over and local persistence;
+  the obsolete hidden gameplay Best node has been removed.
+- Final Flap/Score/Death SFX are integrated. At positive multiples of 10,
+  milestone Meow replaces the normal score sound.
+- Main BGM starts from 0:00 each run at -5 dB, loops natively, and fades out over
+  0.2 seconds on death. There is no Game Over jingle. Asset details: `AUDIO.md`.
+- Game Over UI delays: HIT/BONK 0.9 seconds; SQUASH 0.4 seconds.
+- Handheld orientation is explicitly Portrait. The 480 × 720 viewport and
+  `canvas_items` / `expand` strategy remain unchanged. Android export is not configured.
+- The final audit loaded the editor without errors, rendered gameplay/Game Over
+  at 480 × 720, 360 × 640 and 720 × 1280, and checked gameplay/audio flow.
+  High-score checks used an isolated save path, preserving the real save.
+- At the two 9:16 sizes, `expand` increases logical height to about 853 and crops
+  room backgrounds horizontally. The aspect strategy remains pending review.
+
+The TASK-010 results below are retained as historical prototype records.
+
+## Historical TASK-010 result
 
 V1 is technically ready for replacing placeholder art and assigning final audio
 streams. Human playtesting and listening remain necessary before final acceptance.
 No features were added and no commit was made.
 
-## Actual gameplay values
+## Current effective gameplay values
 
 The saved main scene overrides the script defaults. Those manual values were
-preserved and tested:
+preserved; this table includes the later approved obstacle-width update:
 
 | Value | Effective setting |
 | --- | --- |
@@ -20,10 +43,10 @@ preserved and tested:
 | Obstacle speed | 200 px/s |
 | Spawn interval | 2 seconds |
 | Gap size | 185 px |
-| Obstacle width | 70 px |
+| Obstacle width | 80 px |
 | Base viewport | 480 × 720 |
 
-## Tested
+## Historical TASK-010 tests
 
 - Gravity integration and simulated physical Space/left mouse button input.
 - Repeated Timer spawning, random gaps, geometry/hitbox alignment, speed,
@@ -73,6 +96,6 @@ viewport resize. The original reason, disabled controls and game-over flow remai
   were inspected; this was not a human gameplay session.
 - Review readability, contrast and UI obstruction across all backgrounds and on
   the intended phone/window sizes. Confirm final artwork aligns with hitboxes.
-- Assign real short audio streams using AUDIO.md, then listen for volume balance,
-  timing, repeated flaps and restart interruption. No actual audio was auditioned.
+- Listen to final audio for volume balance, repeated flaps, milestone Meow,
+  the BGM loop seam, death fade-out and restart interruption.
 - Mobile-device input/performance and export behavior were not tested.

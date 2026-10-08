@@ -35,6 +35,8 @@ static var previous_background: int = -1
 @export_range(0.1, 10.0, 0.1) var spawn_interval: float = 2.0
 @export_range(1.0, 600.0, 1.0) var obstacle_speed: float = 170.0
 @export_range(40.0, 600.0, 1.0) var gap_size: float = 240.0
+@export_range(0.0, 600.0, 1.0) var max_gap_center_delta: float = 140.0
+@export_range(240.0, 1440.0, 1.0) var max_gameplay_height: float = 800.0
 @export_range(0.0, 3.0, 0.1) var game_over_ui_delay_hit: float = 0.9
 @export_range(0.0, 3.0, 0.1) var game_over_ui_delay_bonk: float = 0.9
 @export_range(0.0, 3.0, 0.1) var game_over_ui_delay_squash: float = 0.4
@@ -43,9 +45,16 @@ var is_game_over: bool = false
 var death_reason: String = ""
 var score: int = 0
 var best_score: int = 0
+var previous_gap_center: float
+var has_previous_gap: bool = false
+var player_start_y: float
 
 
 func _ready() -> void:
+	var viewport_height := get_viewport_rect().size.y
+	if viewport_height > 720.0:
+		$Player.position.y = viewport_height / 2.0
+	player_start_y = $Player.position.y
 	MusicManager.start_run()
 	$ScoreSound.stream = SCORE_SOUND
 	$DeathSound.stream = DEATH_SOUND
@@ -54,7 +63,6 @@ func _ready() -> void:
 	$Player.died.connect(_on_player_died)
 	$SpawnTimer.start(spawn_interval)
 	$UI/ScoreLabel.text = "Score: 0"
-	$UI/BestScoreLabel.text = "Best: %d" % best_score
 	$UI/GameOverPanel.hide()
 	$UI/GameOverPanel/Content/DeathQuoteLabel.text = ""
 
@@ -86,7 +94,6 @@ func _process(_delta: float) -> void:
 			$UI/ScoreLabel.text = "Score: %d" % score
 			if score > best_score:
 				best_score = score
-				$UI/BestScoreLabel.text = "Best: %d" % best_score
 				_save_high_score()
 
 
@@ -110,14 +117,28 @@ func _spawn_obstacle_pair() -> void:
 	if is_game_over:
 		return
 	var screen_size := get_viewport_rect().size
-	var edge_margin := screen_size.y * 0.1
+	var gameplay_height := minf(screen_size.y, max_gameplay_height)
+	var gameplay_top := (screen_size.y - gameplay_height) / 2.0
+	var gameplay_bottom := gameplay_top + gameplay_height
+	var edge_margin := gameplay_height * 0.1
 	var pair := OBSTACLE_PAIR.instantiate()
 	# Keep both obstacles visible even if the configured gap is too large.
-	pair.gap_size = minf(gap_size, screen_size.y - edge_margin * 2.0)
+	pair.gap_size = minf(gap_size, gameplay_height - edge_margin * 2.0)
 	var half_gap: float = pair.gap_size / 2.0
-	pair.gap_center = randf_range(
-		edge_margin + half_gap, screen_size.y - edge_margin - half_gap
-	)
+	var safe_min_y := gameplay_top + edge_margin + half_gap
+	var safe_max_y := gameplay_bottom - edge_margin - half_gap
+	var reference_y := previous_gap_center if has_previous_gap else player_start_y
+	# Keep the first gap near the start, then walk between consecutive gaps.
+	var allowed_delta := max_gap_center_delta if has_previous_gap else 80.0
+	var min_y := maxf(safe_min_y, reference_y - allowed_delta)
+	var max_y := minf(safe_max_y, reference_y + allowed_delta)
+	# A resize may put the old center outside the new safe bounds.
+	if min_y > max_y:
+		min_y = clampf(reference_y, safe_min_y, safe_max_y)
+		max_y = min_y
+	pair.gap_center = randf_range(min_y, max_y)
+	previous_gap_center = pair.gap_center
+	has_previous_gap = true
 	pair.move_speed = obstacle_speed
 	pair.position.x = screen_size.x
 	$Obstacles.add_child(pair)

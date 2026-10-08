@@ -1,29 +1,31 @@
-# Placeholder audio hooks
+# Cat Flight V1 Audio
 
-No audio assets are included yet. The game stays silent until streams are assigned.
+Approved audio is assigned by scripts at runtime; no audition selectors remain.
+License details: `assets/audio/licenses/AUDIO_LICENSES.md`.
 
-In the Godot Inspector, drag a short WAV or OGG asset into the **Stream** field:
+- Player FlapSound: `assets/audio/sfx/sfx_flap.wav`, once per flap while alive, -12 dB.
+- Main ScoreSound: `assets/audio/sfx/sfx_score.wav`, once per normal point, -10 dB.
+- At positive multiples of 10, ScoreSound uses `sfx_meow.wav` instead of the normal
+  score sound. They do not play together.
+- Main DeathSound: `assets/audio/sfx/sfx_death.wav`, once per death, -10 dB.
 
-- `scenes/player.tscn` → `FlapSound`: plays for each flap while alive.
-- `scenes/main.tscn` → `ScoreSound`: plays when an obstacle pair awards one point.
-- `scenes/main.tscn` → `DeathSound`: plays once for any death reason.
+SFX do not loop. Death stops flap/score playback; scene reload recreates the SFX
+players. Adjust node Volume dB values to tune the mix.
 
-Leave Autoplay and looping off. Adjust each node's Volume dB as needed. FlapSound
-starts at -12 dB; ScoreSound and DeathSound start at -10 dB. Empty streams are
-skipped safely. Death stops flap and score playback, and restarting disposes of
-all old sound players along with the old scene.
+## Main BGM
 
-## Movement defaults
+MusicManager Autoload holds one AudioStreamPlayer for `assets/audio/bgm/bgm_main.wav`.
+Each run starts it from 0:00 at -5 dB. The WAV uses native forward looping.
+Death fades it out over 0.2 seconds and stops it. Game Over has no BGM/jingle.
+Restart cancels the old fade and starts the track from the beginning.
+MusicManager exports `bgm_volume_db` and `death_fade_duration` for tuning.
 
-Tune these exported values in the Inspector:
+## Current effective gameplay tuning
 
-- Player: `fall_gravity = 900` px/s², `flap_strength = 330` px/s.
-- Main: `obstacle_speed = 170` px/s, `spawn_interval = 2.0` seconds,
-  `gap_size = 240` px.
-- ObstaclePair: `obstacle_width = 70` px. Main supplies speed and gap size
-  for spawned pairs; its values override the pair's standalone defaults.
+The saved Main scene overrides standalone script fallback defaults:
 
-The slightly gentler gravity and flap retain roughly the previous flap height
-(about 60 px), with a slower arc. Obstacles move a little slower and have a wider
-gap. The two-second spawn interval is retained, giving 340 px between pairs.
-These are initial tuning choices; playtesting may suggest further adjustments.
+- Player gravity: 900 px/s²; flap strength: 330 px/s.
+- Main obstacle speed: 200 px/s; spawn interval: 2.0 seconds; gap height: 185 px.
+- Obstacle visual/collision width: 80 px; nominal pair spacing: 400 px.
+- Logical viewport: 480 × 720; stretch: `canvas_items`; aspect: `expand`.
+- Game Over delays: HIT 0.9 seconds; BONK 0.9 seconds; SQUASH 0.4 seconds.

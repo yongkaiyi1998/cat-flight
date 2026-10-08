@@ -41,7 +41,9 @@ script = ExtResource("1_player")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1937696782]
 shape = SubResource("Rectangle_player")
 
-[node name="Visual" type="AnimatedSprite2D" parent="."]
+[node name="VisualRoot" type="Node2D" parent="."]
+
+[node name="Visual" type="AnimatedSprite2D" parent="VisualRoot"]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_yuki")
 animation = &"fly"
