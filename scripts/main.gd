@@ -22,18 +22,23 @@ const DEATH_QUOTES: Array[String] = [
 	"Flying is a work in pawgress.",
 	"Meow. Let's try again.",
 ]
-const BACKGROUND_TEXTURES: Array[Texture2D] = [
-	preload("res://assets/backgrounds/v1/background_sunny_room.png"),
-	preload("res://assets/backgrounds/v1/background_living_room.png"),
-	preload("res://assets/backgrounds/v1/background_bedroom.png"),
-	preload("res://assets/backgrounds/v1/background_cat_corner.png"),
+# Each room keeps its day and night textures together.
+const BACKGROUND_PAIRS = [
+	[preload("res://assets/backgrounds/v1/background_sunny_room.png"),
+	 preload("res://assets/backgrounds/v1/background_sunny_room_night.png")],
+	[preload("res://assets/backgrounds/v1/background_living_room.png"),
+	 preload("res://assets/backgrounds/v1/background_living_room_night.png")],
+	[preload("res://assets/backgrounds/v1/background_bedroom.png"),
+	 preload("res://assets/backgrounds/v1/background_bedroom_night.png")],
+	[preload("res://assets/backgrounds/v1/background_cat_corner.png"),
+	 preload("res://assets/backgrounds/v1/background_cat_corner_night.png")],
 ]
 
 # A script static variable survives scene reloads without an extra singleton.
 static var previous_background: int = -1
 
 @export_range(0.1, 10.0, 0.1) var spawn_interval: float = 2.0
-@export_range(1.0, 600.0, 1.0) var obstacle_speed: float = 170.0
+@export_range(1.0, 600.0, 1.0) var obstacle_speed: float = 200.0
 @export_range(40.0, 600.0, 1.0) var gap_size: float = 240.0
 @export_range(0.0, 600.0, 1.0) var max_gap_center_delta: float = 140.0
 @export_range(240.0, 1440.0, 1.0) var max_gameplay_height: float = 800.0
@@ -48,6 +53,9 @@ var best_score: int = 0
 var previous_gap_center: float
 var has_previous_gap: bool = false
 var player_start_y: float
+var background_index: int = 0
+var background_is_night: bool = false
+var background_transition: Tween
 
 
 func _ready() -> void:
@@ -68,14 +76,31 @@ func _ready() -> void:
 
 
 func _choose_background() -> void:
-	var background_index := randi_range(0, BACKGROUND_TEXTURES.size() - 1)
-	if BACKGROUND_TEXTURES.size() > 1 and previous_background >= 0:
+	background_index = randi_range(0, BACKGROUND_PAIRS.size() - 1)
+	if BACKGROUND_PAIRS.size() > 1 and previous_background >= 0:
 		# Pick from all entries except the previous run's background.
-		background_index = randi_range(0, BACKGROUND_TEXTURES.size() - 2)
+		background_index = randi_range(0, BACKGROUND_PAIRS.size() - 2)
 		if background_index >= previous_background:
 			background_index += 1
-	$Background/Image.texture = BACKGROUND_TEXTURES[background_index]
+	if background_transition != null:
+		background_transition.kill()
+	background_is_night = false
+	$Background/Image.texture = BACKGROUND_PAIRS[background_index][0]
+	$Background/NightImage.texture = BACKGROUND_PAIRS[background_index][1]
+	$Background/NightImage.modulate.a = 0.0
 	previous_background = background_index
+
+
+func _update_background_phase() -> void:
+	var next_is_night := floori(score / 50.0) % 2 == 1
+	if next_is_night == background_is_night:
+		return
+	background_is_night = next_is_night
+	if background_transition != null:
+		background_transition.kill()
+	background_transition = create_tween()
+	background_transition.tween_property($Background/NightImage, "modulate:a",
+		1.0 if background_is_night else 0.0, 0.5)
 
 
 func _process(_delta: float) -> void:
@@ -87,6 +112,10 @@ func _process(_delta: float) -> void:
 		if not pair.has_scored and pair.position.x + pair.obstacle_width < player_left:
 			pair.has_scored = true
 			score += 1
+			_update_background_phase()
+			# Change every pair together to preserve their relative spacing.
+			for active_pair in $Obstacles.get_children():
+				active_pair.move_speed = _current_obstacle_speed()
 			# One player handles both sounds, so a milestone replaces the normal chime.
 			$ScoreSound.stream = MEOW_SOUND if score % 10 == 0 else SCORE_SOUND
 			if $ScoreSound.stream != null:
@@ -111,6 +140,11 @@ func _save_high_score() -> void:
 	save_data.set_value("scores", "best", best_score)
 	if save_data.save(HIGH_SCORE_PATH) != OK:
 		push_warning("Could not save the high score.")
+
+
+func _current_obstacle_speed() -> float:
+	var speed_tier := mini(floori(score / 20.0), 4)
+	return obstacle_speed + speed_tier * 20.0
 
 
 func _spawn_obstacle_pair() -> void:
@@ -139,7 +173,7 @@ func _spawn_obstacle_pair() -> void:
 	pair.gap_center = randf_range(min_y, max_y)
 	previous_gap_center = pair.gap_center
 	has_previous_gap = true
-	pair.move_speed = obstacle_speed
+	pair.move_speed = _current_obstacle_speed()
 	pair.position.x = screen_size.x
 	$Obstacles.add_child(pair)
 

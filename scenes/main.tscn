@@ -60,6 +60,18 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 
+[node name="NightImage" type="TextureRect" parent="Background"]
+modulate = Color(1, 1, 1, 0)
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
 [node name="Ground" parent="." unique_id=53914351 instance=ExtResource("3_ground")]
 
 [node name="Obstacles" type="Node2D" parent="." unique_id=858012460]
